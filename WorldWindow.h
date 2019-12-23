@@ -35,7 +35,6 @@ class WorldWindow : public Fl_Gl_Window {
 	// the last time this method was called.
 	bool	Update(float);
 
-	int camAngle;
 
     private:
 	Ground	    ground;	    // The ground object.
@@ -50,6 +49,7 @@ class WorldWindow : public Fl_Gl_Window {
 
 	int     button;	// The mouse button that is down, -1 if none.
 	int keybutton; //button to keep track of keyboard presses
+	bool keyReady;
 	int wheel; //scrollwheel
 
 	int	x_last;	// The location of the most recent mouse event

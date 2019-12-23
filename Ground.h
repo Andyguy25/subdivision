@@ -13,7 +13,6 @@
 class Ground {
   private:
     GLubyte display_list;   // The display list that does all the work.
-    GLuint  texture_obj;    // The object for the grass texture.
     bool    initialized;    // Whether or not we have been initialised.
 
   public:

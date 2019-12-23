@@ -21,6 +21,7 @@ WorldWindow::WorldWindow(int x, int y, int width, int height, char *label)
 {
     button = -1;
 	keybutton = -1;
+	keyReady = true;
 	wheel = 0;
 
 
@@ -176,10 +177,10 @@ WorldWindow::keyControl(float dt) {
 	switch (keybutton)
 	{
 	case FL_Control_L:
-		camAngle = 1;
+		std::cout << "pressed\n";
 		return;
 	case FL_Shift_L:
-		camAngle = 0;
+		std::cout << "shifty\n";
 		return;
 	
 	default:
@@ -207,14 +208,14 @@ WorldWindow::Update(float dt)
 		Drag(dt);
 		
 	}
-	if (keybutton != -1) {
+	if (keybutton != -1 && keyReady == true) {
 		keyControl(dt);
+		keyReady = false;
 	}
 
 	if (wheel != 0) {
 		wheelControl(dt);
 	}
-
 
     return true;
 }
@@ -251,6 +252,7 @@ WorldWindow::handle(int event)
 		  return 1;
 	  case FL_KEYUP:
 		  keybutton = -1;
+		  keyReady = true;
 		  return 1;
 
 	  case FL_MOUSEWHEEL:

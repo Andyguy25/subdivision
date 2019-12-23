@@ -65,7 +65,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>fltkd.lib;opengl32.lib;glu32.lib;fltkgld.lib;wsock32.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)Project2.exe</OutputFile>
+      <OutputFile>$(OutDir)Subdivision.exe</OutputFile>
       <AdditionalLibraryDirectories>C:\Users\Andrew\Desktop\CS447\fltk_vs2017_win10\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
