@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <GL/glu.h>
 
+
 // Destructor
 Ground::~Ground(void)
 {
@@ -25,7 +26,12 @@ Ground::~Ground(void)
 bool
 Ground::Initialize(void)
 {
-	
+	//test adding points to vector
+
+	//pointList.push_back()
+
+	////////////////////////////done test
+
     display_list = glGenLists(1);
     glNewList(display_list, GL_COMPILE);
 	glColor3f(1.0, 1.0, 0.5);
@@ -64,8 +70,6 @@ Ground::Initialize(void)
 		
 
 	glEnd();
-
-	
     glEndList();
 
     initialized = true;
@@ -82,5 +86,4 @@ Ground::Draw(void)
     glCallList(display_list);
     glPopMatrix();
 }
-
 

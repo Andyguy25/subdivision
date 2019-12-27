@@ -9,6 +9,14 @@
 #define _GROUND_H_
 
 #include <Fl/gl.h>
+#include <utility> 
+#include <vector>
+
+struct coord {
+	double x;
+	double y;
+	double z;
+};
 
 class Ground {
   private:
@@ -28,6 +36,9 @@ class Ground {
 
     // Does the drawing.
     void    Draw(void);
+	
+	std::vector<std::pair<coord, coord>> pointList;
+
 };
 
 
