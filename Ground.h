@@ -11,11 +11,14 @@
 #include <Fl/gl.h>
 #include <utility> 
 #include <vector>
+#include <iostream>
+#include <tuple>
 
 struct coord {
 	double x;
 	double y;
 	double z;
+
 };
 
 class Ground {
@@ -37,8 +40,21 @@ class Ground {
     // Does the drawing.
     void    Draw(void);
 	
-	std::vector<std::pair<coord, coord>> pointList;
+	std::vector<std::pair<std::pair<coord, coord>,coord>> pointList;
 
+	bool isEqual(coord first, coord second) {
+		if (first.x == second.x && first.y == second.y && first.z == second.z) {
+			return true;
+		}
+		else
+			return false;
+	}
+
+	void disp(coord coor) {
+		std::cout << "X: " << coor.x << "  ";
+		std::cout << "Y: " << coor.y << "  ";
+		std::cout << "Z: " << coor.z << "  \n";
+	}
 };
 
 
