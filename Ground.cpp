@@ -9,7 +9,8 @@
 #include "libtarga.h"
 #include <stdio.h>
 #include <GL/glu.h>
-
+#include <time.h>
+#include <stdlib.h>
 
 // Destructor
 Ground::~Ground(void)
@@ -180,7 +181,7 @@ Ground::midCalc(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointLis
 		double randMin = -5.0;
 		//minimum random value
 		double randMax = 5.0;
-
+		srand(time(NULL));
 		double r1 = randMin + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (randMax - randMin)));
 		double r2 = randMin + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (randMax - randMin)));
 		double r3 = randMin + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (randMax - randMin)));
@@ -243,26 +244,46 @@ Ground::checkFinal(std::vector<std::pair<std::pair<coord, coord>, coord>>& final
 
 void
 Ground::subdivide() {
-
-	for (int i = 0; i < pointList.size(); i++) {
-		if (i % 3 == 0)
-			std::cout << std::endl;
-		disp(pointList[i]);
-	}
-
+	std::cout << "Rendering...\n";
 	midCalc(pointList);
-
-	
-	std::cout << "//////////////////////////////////////////////////////////////////" << std::endl;
-	for (int i = 0; i < finalList.size(); i++) {
-		if (i % 3 == 0)
-			std::cout << std::endl;
-		disp(finalList[i]);
-	}
-
+	vectToVert(pointList);
+	std::cout << "Rendered\n";
 }
 
 void
 Ground::vectToVert(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointList) {
 
+	glDeleteLists(display_list, 1);
+
+	display_list = glGenLists(1);
+	glNewList(display_list, GL_COMPILE);
+	glColor3f(1.0, 1.0, 0.5);
+	glBegin(GL_TRIANGLES);
+
+	for (int i = 0; i < pointList.size(); i+=3) {
+
+		coord vectU;
+		vectU.x = pointList[i + 1].first.first.x - pointList[i].first.first.x;
+		vectU.y = pointList[i + 1].first.first.y - pointList[i].first.first.y;
+		vectU.z = pointList[i + 1].first.first.z - pointList[i].first.first.z;
+
+		coord vectV;
+		vectV.x = pointList[i + 2].first.first.x - pointList[i].first.first.x;
+		vectV.y = pointList[i + 2].first.first.y - pointList[i].first.first.y;
+		vectV.z = pointList[i + 2].first.first.z - pointList[i].first.first.z;
+
+		coord surfNorm;
+		surfNorm.x = (vectU.y * vectV.z) - (vectU.z * vectV.y);
+		surfNorm.y = (vectU.z * vectV.x) - (vectU.x * vectV.z);
+		surfNorm.z = (vectU.x * vectV.y) - (vectU.y * vectV.x);
+		
+		glNormal3f(surfNorm.x, surfNorm.y, surfNorm.z);
+		glVertex3f(pointList[i].first.first.x, pointList[i].first.first.y, pointList[i].first.first.z);
+		glVertex3f(pointList[i+1].first.first.x, pointList[i + 1].first.first.y, pointList[i + 1].first.first.z);
+		glVertex3f(pointList[i + 2].first.first.x, pointList[i + 2].first.first.y, pointList[i + 2].first.first.z);
+	}
+	
+
+	glEnd();
+	glEndList();
 }
