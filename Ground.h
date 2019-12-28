@@ -40,21 +40,22 @@ class Ground {
     // Does the drawing.
     void    Draw(void);
 	
-	std::vector<std::pair<std::pair<coord, coord>,coord>> pointList;
+	std::vector<std::pair<std::pair<coord, coord>, coord>> pointList;
+	std::vector<std::pair<std::pair<coord, coord>, coord>> finalList;
 
-	bool isEqual(coord first, coord second) {
-		if (first.x == second.x && first.y == second.y && first.z == second.z) {
-			return true;
-		}
-		else
-			return false;
-	}
+	bool isEqualNoZ(coord first, coord second);
 
-	void disp(coord coor) {
-		std::cout << "X: " << coor.x << "  ";
-		std::cout << "Y: " << coor.y << "  ";
-		std::cout << "Z: " << coor.z << "  \n";
-	}
+	void disp(std::pair<std::pair<coord, coord>, coord>);
+
+	void midCalc(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointList);
+	coord averageCoord(coord, coord);
+	
+	bool checkFinal(std::vector<std::pair<std::pair<coord, coord>, coord>>& finalList, coord& coordToCheck);
+
+	void subdivide();
+
+	void vectToVert(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointList);
+
 };
 
 

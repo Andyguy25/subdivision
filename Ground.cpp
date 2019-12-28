@@ -87,13 +87,6 @@ Ground::Initialize(void)
 	pointList.push_back(std::make_pair(std::make_pair(t6, t7), defCoord));
 	pointList.push_back(std::make_pair(std::make_pair(t7, t8), defCoord));
 
-	for (int i = 0; i < pointList.size(); i++) {
-		if (i % 3 == 0)
-			std::cout << std::endl;
-		disp(pointList[i].first.first);
-	}
-	std::cout << std::endl;
-	
 
     display_list = glGenLists(1);
     glNewList(display_list, GL_COMPILE);
@@ -141,7 +134,6 @@ Ground::Initialize(void)
 }
 
 
-// Draw just calls the display list we set up earlier.
 void
 Ground::Draw(void)
 {
@@ -150,3 +142,127 @@ Ground::Draw(void)
     glPopMatrix();
 }
 
+bool
+Ground::isEqualNoZ(coord first, coord second) {
+	if (first.x == second.x && first.y == second.y) {
+		return true;
+	}
+	else
+		return false;
+}
+
+void
+Ground::disp(std::pair<std::pair<coord, coord>, coord> coor) {
+	std::cout << "startX: " << coor.first.first.x << "  ";
+	std::cout << "startY: " << coor.first.first.y << "  ";
+	std::cout << "startZ: " << coor.first.first.z << "  \t";
+	std::cout << "   ";
+	std::cout << "endX: " << coor.first.second.x << "  ";
+	std::cout << "endY: " << coor.first.second.y << "  ";
+	std::cout << "endZ: " << coor.first.second.z << "  \t";
+	std::cout << "   ";
+	std::cout << "midX: " << coor.second.x << "  ";
+	std::cout << "midY: " << coor.second.y << "  ";
+	std::cout << "midZ: " << coor.second.z << "\n";
+}
+
+void
+Ground::midCalc(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointList) {
+	
+	coord defCoord;
+	defCoord.x = 100.0;
+	defCoord.y = 100.0;
+	defCoord.z = 100.0;
+
+	for (int i = 0; i < pointList.size(); i += 3) {
+
+		//maximum random value
+		double randMin = -5.0;
+		//minimum random value
+		double randMax = 5.0;
+
+		double r1 = randMin + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (randMax - randMin)));
+		double r2 = randMin + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (randMax - randMin)));
+		double r3 = randMin + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (randMax - randMin)));
+
+		pointList[i].second = averageCoord(pointList[i].first.first, pointList[i].first.second);
+		pointList[i + 1].second = averageCoord(pointList[i + 1].first.first, pointList[i + 1].first.second);
+		pointList[i + 2].second = averageCoord(pointList[i + 2].first.first, pointList[i + 2].first.second);
+
+		//before randomizing z value, check if you've done it before so edges dont have gaps
+		if (!checkFinal(finalList, pointList[i].second))
+			pointList[i].second.z += r1;
+
+		if (!checkFinal(finalList, pointList[i + 1].second))
+			pointList[i + 1].second.z += r2;
+
+		if (!checkFinal(finalList, pointList[i + 2].second))
+			pointList[i + 2].second.z += r3;
+
+		//////////////////////////////////////////////////add to finalList in specific counterclockwise order
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i].first.first, pointList[i].second), defCoord));
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i].second, pointList[i+2].second), defCoord));
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i+2].second, pointList[i].first.first), defCoord));
+
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i+1].first.first, pointList[i+1].second), defCoord));
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i + 1].second, pointList[i].second), defCoord));
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i].second, pointList[i + 1].first.first), defCoord));
+
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i+2].first.first, pointList[i+2].second), defCoord));
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i + 2].second, pointList[i + 1].second), defCoord));
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i + 1].second, pointList[i + 2].first.first), defCoord));
+
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i].second, pointList[i+1].second), defCoord));
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i+1].second, pointList[i + 2].second), defCoord));
+		finalList.push_back(std::make_pair(std::make_pair(pointList[i+2].second, pointList[i].second), defCoord));
+	}
+	pointList.swap(finalList);
+	finalList.clear();
+}
+
+coord
+Ground::averageCoord(coord start, coord end) {
+	coord middle;
+	middle.x = (start.x + end.x) / 2;
+	middle.y = (start.y + end.y) / 2;
+	middle.z = (start.z + end.z) / 2;
+	return middle;
+}
+
+//only need z value, check if new middle vertex is in finalList, if it is, return z value
+bool
+Ground::checkFinal(std::vector<std::pair<std::pair<coord, coord>, coord>>& finalList, coord& coordToCheck) {
+	for (int i = 0; i < finalList.size(); i++) {
+		if (isEqualNoZ(coordToCheck, finalList[i].first.first)) {
+			coordToCheck.z = finalList[i].first.first.z;
+			return true;
+		}
+	}
+	return false;
+}
+
+void
+Ground::subdivide() {
+
+	for (int i = 0; i < pointList.size(); i++) {
+		if (i % 3 == 0)
+			std::cout << std::endl;
+		disp(pointList[i]);
+	}
+
+	midCalc(pointList);
+
+	
+	std::cout << "//////////////////////////////////////////////////////////////////" << std::endl;
+	for (int i = 0; i < finalList.size(); i++) {
+		if (i % 3 == 0)
+			std::cout << std::endl;
+		disp(finalList[i]);
+	}
+
+}
+
+void
+Ground::vectToVert(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointList) {
+
+}

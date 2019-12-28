@@ -177,10 +177,11 @@ WorldWindow::keyControl(float dt) {
 	switch (keybutton)
 	{
 	case FL_Control_L:
-		std::cout << "pressed\n";
+		//std::cout << "pressed\n";
+		ground.subdivide();
 		return;
 	case FL_Shift_L:
-		std::cout << "shifty\n";
+		//std::cout << "shifty\n";
 		return;
 	
 	default:
