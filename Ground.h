@@ -40,27 +40,26 @@ class Ground {
     // Does the drawing.
     void    Draw(void);
 	
-	std::vector<std::pair<std::pair<coord, coord>, coord>> pointList;
-	std::vector<std::pair<std::pair<coord, coord>, coord>> finalList;
-
-	//std::vector<coord> checkList;
+	std::vector<coord> pointList;
+	std::vector<coord> finalList;
+	std::vector<coord> searchList[101][101];
 
 
 	bool isEqualNoZ(coord first, coord second);
 
 	void disp(std::pair<std::pair<coord, coord>, coord>);
 
-	void midCalc(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointList);
+	void midCalc(std::vector<coord>& pointList);
 	coord averageCoord(coord, coord);
 	
-	bool checkFinal(std::vector<std::pair<std::pair<coord, coord>, coord>>& finalList, coord& coordToCheck);
+	bool checkFinal(std::vector<coord> searchList[101][101], coord& coordToCheck);
 
 	void subdivide();
 
-	void vectToVert(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointList);
+	void vectToVert(std::vector<coord>& pointList);
 	int cycleNum;
 	double sizeReducer;
-	int lastIndexFinal;
+	double constSize = 0.5;
 };
 
 
