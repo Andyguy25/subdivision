@@ -12,6 +12,7 @@
 #include <time.h>
 #include <stdlib.h>
 
+
 // Destructor
 Ground::~Ground(void)
 {
@@ -27,7 +28,7 @@ Ground::~Ground(void)
 bool
 Ground::Initialize(void)
 {
-	coord t1;
+	/*coord t1;
 	t1.x = 50.0;
 	t1.y = 30.0;
 	t1.z = 0.0;
@@ -87,47 +88,70 @@ Ground::Initialize(void)
 	pointList.push_back(std::make_pair(std::make_pair(t8, t6), defCoord));
 	pointList.push_back(std::make_pair(std::make_pair(t6, t7), defCoord));
 	pointList.push_back(std::make_pair(std::make_pair(t7, t8), defCoord));
+	*/
 
+	coord t1;
+	t1.x = 0.0;
+	t1.y = 50.0;
+	t1.z = 0.0;
+	coord t2;
+	t2.x = -50.0;
+	t2.y = 30.0;
+	t2.z = 0.0;
+	coord t3;
+	t3.x = -50.0;
+	t3.y = -30.0;
+	t3.z = 0.0;
+	coord t4;
+	t4.x = 0.0;
+	t4.y = -50.0;
+	t4.z = 0.0;
+	coord t5;
+	t5.x = 50.0;
+	t5.y = -30.0;
+	t5.z = 0.0;
+	coord t6;
+	t6.x = 50.0;
+	t6.y = 30.0;
+	t6.z = 0.0;
+	coord t7;
+	t7.x = 0.0;
+	t7.y = 0.0;
+	t7.z = 50.0;
+	coord defCoord;
+	defCoord.x = 100.0;
+	defCoord.y = 100.0;
+	defCoord.z = 100.0;
 
-    display_list = glGenLists(1);
-    glNewList(display_list, GL_COMPILE);
-	glColor3f(1.0, 1.0, 0.5);
+	pointList.push_back(std::make_pair(std::make_pair(t1, t2), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t2, t7), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t7, t1), defCoord));
 
-	glBegin(GL_TRIANGLES);
-		
-		glNormal3f(0.0, -0.5, 1.0);
-		glVertex3f(50.0, 30.0, 0.0);
-		glVertex3f(50.0, 70.0, 40.0);
-		glVertex3f(-50.0, 30.0, 0.0);
+	pointList.push_back(std::make_pair(std::make_pair(t2, t3), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t3, t7), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t7, t2), defCoord));
 
-		glNormal3f(0.0, -0.5, 1.0);
-		glVertex3f(50.0, 70.0, 40.0);
-		glVertex3f(-50.0, 70.0, 40.0);
-		glVertex3f(-50.0, 30.0, 0.0);
+	pointList.push_back(std::make_pair(std::make_pair(t3, t4), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t4, t7), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t7, t3), defCoord));
 
-		glNormal3f(0.0, 0.0, 1.0);
-		glVertex3f(50.0, 30.0, 0.0);
-		glVertex3f(-50.0, 30.0, 0.0);
-		glVertex3f(-50.0, -30.0, 0.0);
+	pointList.push_back(std::make_pair(std::make_pair(t4, t5), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t5, t7), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t7, t4), defCoord));
 
-		glNormal3f(0.0, 0.0, 1.0);
-		glVertex3f(50.0, -30.0, 0.0);
-		glVertex3f(50.0, 30.0, 0.0);
-		glVertex3f(-50.0, -30.0, 0.0);
+	pointList.push_back(std::make_pair(std::make_pair(t5, t6), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t6, t7), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t7, t5), defCoord));
 
-		glNormal3f(0.0, 0.5, 1.0);
-		glVertex3f(-50.0, -30.0, 0.0);
-		glVertex3f(-50.0, -70.0, 40.0);
-		glVertex3f(50.0, -30.0, 0.0);
+	pointList.push_back(std::make_pair(std::make_pair(t6, t1), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t1, t7), defCoord));
+	pointList.push_back(std::make_pair(std::make_pair(t7, t6), defCoord));
 
-		glNormal3f(0.0, 0.5, 1.0);
-		glVertex3f(50.0, -70.0, 40.0);
-		glVertex3f(50.0, -30.0, 0.0);
-		glVertex3f(-50.0, -70.0, 40.0);
-		
+	vectToVert(pointList);
 
-	glEnd();
-    glEndList();
+	cycleNum = 0;
+	sizeReducer = 1;
+	lastIndexFinal = 0;
 
     initialized = true;
 
@@ -178,9 +202,12 @@ Ground::midCalc(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointLis
 	for (int i = 0; i < pointList.size(); i += 3) {
 
 		//maximum random value
-		double randMin = -5.0;
+		double randMin = -12.0;
 		//minimum random value
-		double randMax = 5.0;
+		double randMax = 12.0;
+
+		randMin = randMin * sizeReducer;
+		randMax = randMax * sizeReducer;
 		srand(time(NULL));
 		double r1 = randMin + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (randMax - randMin)));
 		double r2 = randMin + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (randMax - randMin)));
@@ -191,16 +218,16 @@ Ground::midCalc(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointLis
 		pointList[i + 2].second = averageCoord(pointList[i + 2].first.first, pointList[i + 2].first.second);
 
 		//before randomizing z value, check if you've done it before so edges dont have gaps
-		if (!checkFinal(finalList, pointList[i].second))
+		//if (!checkFinal(finalList, pointList[i].second))
 			pointList[i].second.z += r1;
 
-		if (!checkFinal(finalList, pointList[i + 1].second))
+		//if (!checkFinal(finalList, pointList[i + 1].second))
 			pointList[i + 1].second.z += r2;
 
-		if (!checkFinal(finalList, pointList[i + 2].second))
+		//if (!checkFinal(finalList, pointList[i + 2].second))
 			pointList[i + 2].second.z += r3;
-
-		//////////////////////////////////////////////////add to finalList in specific counterclockwise order
+			
+		//add to finalList in specific counterclockwise order
 		finalList.push_back(std::make_pair(std::make_pair(pointList[i].first.first, pointList[i].second), defCoord));
 		finalList.push_back(std::make_pair(std::make_pair(pointList[i].second, pointList[i+2].second), defCoord));
 		finalList.push_back(std::make_pair(std::make_pair(pointList[i+2].second, pointList[i].first.first), defCoord));
@@ -216,7 +243,15 @@ Ground::midCalc(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointLis
 		finalList.push_back(std::make_pair(std::make_pair(pointList[i].second, pointList[i+1].second), defCoord));
 		finalList.push_back(std::make_pair(std::make_pair(pointList[i+1].second, pointList[i + 2].second), defCoord));
 		finalList.push_back(std::make_pair(std::make_pair(pointList[i+2].second, pointList[i].second), defCoord));
+
+		/*checkList.push_back(pointList[i].second);
+		checkList.push_back(pointList[i + 1].second);
+		checkList.push_back(pointList[i + 2].second);
+		*/
 	}
+	std::cout << " sizeReduced: " << sizeReducer;
+	sizeReducer = (0.6 * sizeReducer);
+
 	pointList.swap(finalList);
 	finalList.clear();
 }
@@ -233,20 +268,25 @@ Ground::averageCoord(coord start, coord end) {
 //only need z value, check if new middle vertex is in finalList, if it is, return z value
 bool
 Ground::checkFinal(std::vector<std::pair<std::pair<coord, coord>, coord>>& finalList, coord& coordToCheck) {
-	for (int i = 0; i < finalList.size(); i++) {
-		if (isEqualNoZ(coordToCheck, finalList[i].first.first)) {
-			coordToCheck.z = finalList[i].first.first.z;
-			return true;
+	//if (cycleNum < 3) {
+		for (int i = 0; i < finalList.size(); i++) {
+			if (isEqualNoZ(coordToCheck, finalList[i].first.first)) {
+				coordToCheck.z = finalList[i].first.first.z;
+				return true;
+			}
 		}
-	}
+	//}
+	
+	lastIndexFinal++;
 	return false;
 }
 
 void
 Ground::subdivide() {
-	std::cout << "Rendering...\n";
+	std::cout << "Rendering...   ";
 	midCalc(pointList);
 	vectToVert(pointList);
+	cycleNum++;
 	std::cout << "Rendered\n";
 }
 
@@ -278,6 +318,13 @@ Ground::vectToVert(std::vector<std::pair<std::pair<coord, coord>, coord>>& point
 		surfNorm.z = (vectU.x * vectV.y) - (vectU.y * vectV.x);
 		
 		glNormal3f(surfNorm.x, surfNorm.y, surfNorm.z);
+		if (pointList[i].first.first.z > 30)
+			glColor3f(1.0, 1.0, 1.0);
+		else if (pointList[i].first.first.z < 10)
+			glColor3f(0.0, 0.7, 0.1);
+		else
+			glColor3f(0.75, 0.75, 0.75);
+		
 		glVertex3f(pointList[i].first.first.x, pointList[i].first.first.y, pointList[i].first.first.z);
 		glVertex3f(pointList[i+1].first.first.x, pointList[i + 1].first.first.y, pointList[i + 1].first.first.z);
 		glVertex3f(pointList[i + 2].first.first.x, pointList[i + 2].first.first.y, pointList[i + 2].first.first.z);

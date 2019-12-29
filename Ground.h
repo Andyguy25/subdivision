@@ -43,6 +43,9 @@ class Ground {
 	std::vector<std::pair<std::pair<coord, coord>, coord>> pointList;
 	std::vector<std::pair<std::pair<coord, coord>, coord>> finalList;
 
+	//std::vector<coord> checkList;
+
+
 	bool isEqualNoZ(coord first, coord second);
 
 	void disp(std::pair<std::pair<coord, coord>, coord>);
@@ -55,7 +58,9 @@ class Ground {
 	void subdivide();
 
 	void vectToVert(std::vector<std::pair<std::pair<coord, coord>, coord>>& pointList);
-
+	int cycleNum;
+	double sizeReducer;
+	int lastIndexFinal;
 };
 
 
