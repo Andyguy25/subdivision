@@ -187,7 +187,7 @@ Ground::midCalc(std::vector<coord>& pointList) {
 		searchList[indx1][indy1].push_back(firstMid);
 		searchList[indx2][indy2].push_back(secondMid);
 		searchList[indx3][indy3].push_back(thirdMid);
-
+		
 	}
 	std::cout << " sizeReduced: " << sizeReducer;
 	sizeReducer = (constSize * sizeReducer);
@@ -242,9 +242,9 @@ Ground::vectToVert(std::vector<coord>& pointList) {
 	display_list = glGenLists(1);
 	glNewList(display_list, GL_COMPILE);
 	glBegin(GL_TRIANGLES);
-
+	int temp = 0;
 	for (int i = 0; i < pointList.size(); i+=3) {
-
+		temp++;
 		coord vectU;
 		vectU.x = pointList[i + 1].x - pointList[i].x;
 		vectU.y = pointList[i + 1].y - pointList[i].y;
@@ -263,25 +263,53 @@ Ground::vectToVert(std::vector<coord>& pointList) {
 		glNormal3f(surfNorm.x, surfNorm.y, surfNorm.z);
 		
 		int colorDeciderNum = rand() % 100;
-		int grassThresh;
-		int stoneThresh;
-		int snowThresh;
-
-
-
-
-		if (pointList[i].z > 30)
-			glColor3f(1.0, 1.0, 1.0);
-		else if (pointList[i].z < 10)
-			glColor3f(0.0, 0.35, 0.1);
-		else
-			glColor3f(0.75, 0.75, 0.75);
+		int gsThresh; //grass to stone threshold
+		int ssThresh; //stone to snow threshold
+		double colorPoint = pointList[i].z;
 		
+		//add noise to change the z level being compared between -10 and +10, creates a MUCH smoother transition between the levels
+		double zNoise = -10 + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (10 - -10)));
+		colorPoint += zNoise;
+
+		if (colorPoint >= 40) {
+			//supposed to be out of bounds so it has to be snow
+			gsThresh = -1;
+			ssThresh = -1;
+		}
+		else if (colorPoint >= 30 && colorPoint < 40) {
+			gsThresh = -1;
+			ssThresh = 30;
+		}
+		else if (colorPoint >= 20 && colorPoint < 30) {
+			gsThresh = 15;
+			ssThresh = 85;
+		}
+		else if (colorPoint >= 10 && colorPoint < 20) {
+			gsThresh = 75;
+			ssThresh = 101;
+		}
+		else if (colorPoint < 10) {
+			//supposed to be out of bounds so it has to be grass
+			gsThresh = 101;
+			ssThresh = 101;
+		}
+
+		if (colorDeciderNum >= ssThresh) {
+			glColor3f(1.0, 1.0, 1.0);
+		}
+		else if (colorDeciderNum >= gsThresh && colorDeciderNum < ssThresh) {
+			glColor3f(0.5, 0.5, 0.5);
+		}
+		else if(colorDeciderNum < gsThresh){
+			glColor3f(0.0, 0.35, 0.1);
+		}
+
 
 		glVertex3f(pointList[i].x, pointList[i].y, pointList[i].z);
 		glVertex3f(pointList[i+1].x, pointList[i + 1].y, pointList[i + 1].z);
 		glVertex3f(pointList[i + 2].x, pointList[i + 2].y, pointList[i + 2].z);
 	}
+	std::cout << "  " << temp << std::endl;
 
 	glEnd();
 	glEndList();
