@@ -184,9 +184,12 @@ Ground::midCalc(std::vector<coord>& pointList) {
 		int indx3 = floor(thirdMid.x)+50;
 		int indy3 = floor(thirdMid.y)+50;
 
-		searchList[indx1][indy1].push_back(firstMid);
-		searchList[indx2][indy2].push_back(secondMid);
-		searchList[indx3][indy3].push_back(thirdMid);
+		if (!checkFinal(searchList, firstMid))
+			searchList[indx1][indy1].push_back(firstMid);
+		if (!checkFinal(searchList, secondMid))
+			searchList[indx2][indy2].push_back(secondMid);
+		if (!checkFinal(searchList, thirdMid))
+			searchList[indx3][indy3].push_back(thirdMid);
 		
 	}
 	std::cout << " sizeReduced: " << sizeReducer;
@@ -225,6 +228,12 @@ Ground::checkFinal(std::vector<coord> searchList[101][101], coord& coordToCheck)
 	}
 	
 	return false;
+}
+
+void 
+Ground::insertSearchList(std::vector<coord> searchList[101][101], coord& coordToCheck) {
+	int indx = floor(coordToCheck.x) + 50;
+	int indy = floor(coordToCheck.y) + 50;
 }
 
 void
@@ -268,7 +277,7 @@ Ground::vectToVert(std::vector<coord>& pointList) {
 		double colorPoint = pointList[i].z;
 		
 		//add noise to change the z level being compared between -10 and +10, creates a MUCH smoother transition between the levels
-		double zNoise = -10 + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (10 - -10)));
+		double zNoise = -5 + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (5 - -5)));
 		colorPoint += zNoise;
 
 		if (colorPoint >= 40) {
