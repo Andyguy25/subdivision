@@ -150,14 +150,25 @@ Ground::midCalc(std::vector<coord>& pointList) {
 		thirdMid = averageCoord(pointList[i + 2], pointList[i]);
 
 		//before randomizing z value, check if you've done it before so edges dont have gaps
-		if (!checkFinal(searchList, firstMid))
+
+		bool check1 = false;
+		bool check2 = false;
+		bool check3 = false;
+
+		if (!checkFinal(searchList, firstMid)) {
 			firstMid.z += r1;
+			check1 = true;
+		}
 
-		if (!checkFinal(searchList, secondMid))
+		if (!checkFinal(searchList, secondMid)) {
 			secondMid.z += r2;
+			check2 = true;
+		}
 
-		if (!checkFinal(searchList, thirdMid))
+		if (!checkFinal(searchList, thirdMid)) {
 			thirdMid.z += r3;
+			check3 = true;
+		}
 			
 		//add to finalList in specific counterclockwise order
 		finalList.push_back(pointList[i]);
@@ -184,12 +195,15 @@ Ground::midCalc(std::vector<coord>& pointList) {
 		int indx3 = floor(thirdMid.x)+50;
 		int indy3 = floor(thirdMid.y)+50;
 
-		if (!checkFinal(searchList, firstMid))
-			searchList[indx1][indy1].push_back(firstMid);
-		if (!checkFinal(searchList, secondMid))
-			searchList[indx2][indy2].push_back(secondMid);
-		if (!checkFinal(searchList, thirdMid))
-			searchList[indx3][indy3].push_back(thirdMid);
+		if (check1)
+			insertSearchList(searchList, firstMid);
+			//searchList[indx1][indy1].push_back(firstMid);
+		if (check2)
+			insertSearchList(searchList, secondMid);
+			//searchList[indx2][indy2].push_back(secondMid);
+		if (check3)
+			insertSearchList(searchList, thirdMid);
+			//searchList[indx3][indy3].push_back(thirdMid);
 		
 	}
 	std::cout << " sizeReduced: " << sizeReducer;
@@ -217,8 +231,37 @@ Ground::averageCoord(coord start, coord end) {
 //only need z value, check if new middle vertex is in finalList, if it is, return z value
 bool
 Ground::checkFinal(std::vector<coord> searchList[101][101], coord& coordToCheck) {
-		
-	int indx = floor(coordToCheck.x)+50;
+	
+	int indx = floor(coordToCheck.x) + 50;
+	int indy = floor(coordToCheck.y) + 50;
+	if (searchList[indx][indy].size() > 0) {
+
+		int minx = -1;
+		int maxx = searchList[indx][indy].size();
+
+		int midInd = floor((minx + maxx) / 2);
+		double midx = searchList[indx][indy][midInd].x;
+
+		while (((minx + 1) < maxx)) {
+
+			if (coordToCheck.x < midx) {
+				maxx = midInd;
+			}
+
+			else if (coordToCheck.x >= midx) {
+				if (isEqualNoZ(coordToCheck, searchList[indx][indy][midx])) {
+					coordToCheck.z = searchList[indx][indy][midx].z;
+					return true;
+				}
+				minx = midInd;
+			}
+			midInd = floor((minx + maxx) / 2);
+			midx = searchList[indx][indy][midInd].x;
+		}
+		return false;
+	}
+	return false;
+	/*int indx = floor(coordToCheck.x)+50;
 	int indy = floor(coordToCheck.y)+50;
 	for (int i = 0; searchList[indx][indy].size() > i; i++) {
 		if (isEqualNoZ(coordToCheck, searchList[indx][indy][i])) {
@@ -227,13 +270,36 @@ Ground::checkFinal(std::vector<coord> searchList[101][101], coord& coordToCheck)
 		}
 	}
 	
-	return false;
+	return false;*/
 }
 
 void 
 Ground::insertSearchList(std::vector<coord> searchList[101][101], coord& coordToCheck) {
 	int indx = floor(coordToCheck.x) + 50;
 	int indy = floor(coordToCheck.y) + 50;
+	if (searchList[indx][indy].size()) {
+		//min and max are supposed to be one lower and one higher so all numbers get checked
+		int minx = -1;
+		int maxx = searchList[indx][indy].size();
+
+		int midInd = floor((minx + maxx) / 2);
+		double midx = searchList[indx][indy][midInd].x;
+
+		while (((minx + 1) < maxx)) {
+
+			if (coordToCheck.x < midx) {
+				maxx = midInd;
+			}
+
+			else if (coordToCheck.x > midx) {
+				minx = midInd;
+			}
+			midInd = floor((minx + maxx) / 2);
+			midx = searchList[indx][indy][midInd].x;
+		}
+		auto insertHere = searchList[indx][indy].begin() + minx;
+		searchList[indx][indy].insert(insertHere, 1, coordToCheck);
+	}
 }
 
 void
@@ -276,8 +342,10 @@ Ground::vectToVert(std::vector<coord>& pointList) {
 		int ssThresh; //stone to snow threshold
 		double colorPoint = pointList[i].z;
 		
-		//add noise to change the z level being compared between -10 and +10, creates a MUCH smoother transition between the levels
-		double zNoise = -5 + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (5 - -5)));
+		//add noise to change the z level being compared between
+		double minLineNoise = -4;
+		double maxLineNoise = 4;
+		double zNoise = minLineNoise + static_cast <double> (rand()) / (static_cast <double> (RAND_MAX / (maxLineNoise - minLineNoise)));
 		colorPoint += zNoise;
 
 		if (colorPoint >= 40) {

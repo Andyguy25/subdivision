@@ -52,6 +52,8 @@ WorldWindow::draw(void)
 	// Sets the clear color to sky blue.
 	glClearColor(0.53f, 0.81f, 0.92f, 1.0);
 
+	glShadeModel(GL_SMOOTH);
+
 	// Turn on depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
