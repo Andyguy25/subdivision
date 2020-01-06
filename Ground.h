@@ -54,7 +54,7 @@ class Ground {
 	
 	bool checkFinal(std::vector<coord> searchList[101][101], coord& coordToCheck);
 
-	void insertSearchList(std::vector<coord> searchList[101][101], coord& coordToCheck);
+	//void insertSearchList(std::vector<coord> searchList[101][101], coord& coordToCheck);
 
 	void subdivide();
 

@@ -195,15 +195,16 @@ Ground::midCalc(std::vector<coord>& pointList) {
 		int indx3 = floor(thirdMid.x)+50;
 		int indy3 = floor(thirdMid.y)+50;
 
+		
 		if (check1)
-			insertSearchList(searchList, firstMid);
-			//searchList[indx1][indy1].push_back(firstMid);
+			//insertSearchList(searchList, firstMid);
+			searchList[indx1][indy1].push_back(firstMid);
 		if (check2)
-			insertSearchList(searchList, secondMid);
-			//searchList[indx2][indy2].push_back(secondMid);
+			//insertSearchList(searchList, secondMid);
+			searchList[indx2][indy2].push_back(secondMid);
 		if (check3)
-			insertSearchList(searchList, thirdMid);
-			//searchList[indx3][indy3].push_back(thirdMid);
+			//insertSearchList(searchList, thirdMid);
+			searchList[indx3][indy3].push_back(thirdMid);
 		
 	}
 	std::cout << " sizeReduced: " << sizeReducer;
@@ -231,7 +232,7 @@ Ground::averageCoord(coord start, coord end) {
 //only need z value, check if new middle vertex is in finalList, if it is, return z value
 bool
 Ground::checkFinal(std::vector<coord> searchList[101][101], coord& coordToCheck) {
-	
+	/*
 	int indx = floor(coordToCheck.x) + 50;
 	int indy = floor(coordToCheck.y) + 50;
 	if (searchList[indx][indy].size() > 0) {
@@ -261,7 +262,9 @@ Ground::checkFinal(std::vector<coord> searchList[101][101], coord& coordToCheck)
 		return false;
 	}
 	return false;
-	/*int indx = floor(coordToCheck.x)+50;
+	*/
+	
+	int indx = floor(coordToCheck.x)+50;
 	int indy = floor(coordToCheck.y)+50;
 	for (int i = 0; searchList[indx][indy].size() > i; i++) {
 		if (isEqualNoZ(coordToCheck, searchList[indx][indy][i])) {
@@ -269,22 +272,26 @@ Ground::checkFinal(std::vector<coord> searchList[101][101], coord& coordToCheck)
 			return true;
 		}
 	}
+	return false;
 	
-	return false;*/
 }
 
+/*
 void 
 Ground::insertSearchList(std::vector<coord> searchList[101][101], coord& coordToCheck) {
+	
 	int indx = floor(coordToCheck.x) + 50;
 	int indy = floor(coordToCheck.y) + 50;
-	if (searchList[indx][indy].size()) {
+	std::cout << searchList[indx][indy].size() << std::endl;
+	if (searchList[indx][indy].size() > 0) {
+		
 		//min and max are supposed to be one lower and one higher so all numbers get checked
 		int minx = -1;
 		int maxx = searchList[indx][indy].size();
 
 		int midInd = floor((minx + maxx) / 2);
 		double midx = searchList[indx][indy][midInd].x;
-
+		std::cout << minx << " " << maxx << std::endl;
 		while (((minx + 1) < maxx)) {
 
 			if (coordToCheck.x < midx) {
@@ -296,11 +303,13 @@ Ground::insertSearchList(std::vector<coord> searchList[101][101], coord& coordTo
 			}
 			midInd = floor((minx + maxx) / 2);
 			midx = searchList[indx][indy][midInd].x;
+			std::cout << minx << " " << maxx << std::endl;
 		}
 		auto insertHere = searchList[indx][indy].begin() + minx;
 		searchList[indx][indy].insert(insertHere, 1, coordToCheck);
 	}
 }
+*/
 
 void
 Ground::subdivide() {
